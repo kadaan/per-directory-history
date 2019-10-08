@@ -1,24 +1,39 @@
-[Per-Directory-History][6]
-=========================
+[Per-Directory-History][home]
+=============================
 
-Per directory history for zsh, as well as global history, and the
-ability to toggle between them with ^G.
+This is an implementation of per directory history for ZSH:
 
-This is a implementation of per directory history for zsh, some 
-implementations of which exist in bash[1][],[2][].  It also implements 
-a per-directory-history-toggle-history function to change from using the 
-directory history to using the global history.  In both cases the history is 
-always saved to both the global history and the directory history, so the 
-toggle state will not effect the saved histories.  Being able to switch 
-between global and directory histories on the fly is a novel feature as far 
-as I am aware.
+- Typed commands are saved both in a global history, as well as a
+  per-directory history.
 
-This is a standalone repository for the script, however it is also included in
-[oh-my-zsh][4] as a plugin.
+- A hotkey (<kbd>Alt</kbd><kbd>l</kbd> by default) toggles the current
+  history, used for ZSH history navigation and search.
 
-----------------------------------------------------------------------------
+- Directory histories are saved in a hierarchy under your home
+  directory mirroring the filesystem hierarchy.
+
+This implementation is loosely based on [the implementation by Jim
+Hester][old].  Notable differences:
+
+- Works smoothly with very large (global) history files.
+  The global history file is only read in full when switching to it
+  with the hotkey.
+  
+- Works smoothly with `share_history` (commands are flushed to history
+  files immediately, and become visible in other shell instances).
+  
+- Some subjectively saner defaults and namespacing fixes.
+
+<!--
+  - Does not override a key with a predefined default meaning by default.
+  
+  - Does not break in paths containing a path component named `history`.
+  
+  - Uses a more meaningful location for the per-directory history trees.
+-->
+
 Usage
-----------------------------------------------------------------------------
+-----
 
 1.  Load this script into your interactive ZSH session:
 
@@ -34,22 +49,16 @@ Usage
 Configuration
 -------------------------------------------------------------------------------
 
-* HISTORY_BASE a global variable that defines the base directory in which the 
-  directory histories are stored
-* per-directory-history-toggle-history is the function to toggle the history
+* `PER_DIRECTORY_HISTORY_BASE` is a shell variable which defines the
+  base directory in which the directory histories are stored.
 
--------------------------------------------------------------------------------
-History
--------------------------------------------------------------------------------
+* `PER_DIRECTORY_HISTORY_FILE` is a shell variable which defines the
+  name of the files which will contain the directory histories.  It
+  should be set to something that's unlikely to occur as a path
+  component in any paths you intend to visit on your filesystem.
 
-The idea/inspiration for a per directory history is from [Stewart MacArthur][1] 
-and [Dieter][2], the implementation idea is from [Bart Schaefer][3].  The 
-implementation is by [Jim Hester][5] in September 2012.
+* `per-directory-history-toggle-history` is the function to toggle the
+  history mode.
 
-[1]: http://www.compbiome.com/2010/07/bash-per-directory-bash-history.html
-[2]: http://dieter.plaetinck.be/per_directory_bash
-[3]: http://www.zsh.org/mla/users/1997/msg00226.html
-[4]: https://github.com/robbyrussell/oh-my-zsh
-[5]: http://jimhester.com
-[6]: http://github.com/jimhester/per-directory-history
-
+[home]: https://github.com/CyberShadow/per-directory-history
+[old]: http://github.com/jimhester/per-directory-history

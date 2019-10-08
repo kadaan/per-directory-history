@@ -1,8 +1,7 @@
 #!/usr/bin/env zsh
 
-# An implementation of per-directory history (with a local/global
-# toggle hotkey) which is friendly with large (global) history files
-# and share_history.
+# An implementation of per-directory history.
+# See README.md for more information.
 
 [[ -z $PER_DIRECTORY_HISTORY_BASE ]] && PER_DIRECTORY_HISTORY_BASE="$HOME/.zsh_history_dirs"
 [[ -z $PER_DIRECTORY_HISTORY_FILE ]] && PER_DIRECTORY_HISTORY_FILE="zsh-per-directory-history"
