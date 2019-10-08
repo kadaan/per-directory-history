@@ -9,7 +9,7 @@
 [[ -z $PER_DIRECTORY_HISTORY_TOGGLE ]] && PER_DIRECTORY_HISTORY_TOGGLE='\el'
 
 #-------------------------------------------------------------------------------
-# toggle global/directory history used for searching - ctrl-G by default
+# toggle global/directory history used for searching - alt-l by default
 #-------------------------------------------------------------------------------
 
 function per-directory-history-toggle-history() {
