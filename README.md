@@ -24,11 +24,11 @@ Usage
 
         % source zsh-per-directory-history.zsh
 
-2.  The default mode if per directory history, interact with your history as normal.
+2.  The default mode is per-directory history, interact with your history as normal.
 
-3.  Press ^G (the Control and G keys simultaneously) to toggle between local
-    and global histories.  If you would prefer a different shortcut to toggle
-    set the PER_DIRECTORY_HISTORY_TOGGLE environment variable.
+3.  Press Alt+l (lowercase L) to toggle between local and global
+    histories.  If you would prefer a different shortcut to toggle set
+    the `PER_DIRECTORY_HISTORY_TOGGLE` shell variable.
 
 -------------------------------------------------------------------------------
 Configuration

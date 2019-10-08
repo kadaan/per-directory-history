@@ -57,7 +57,7 @@
 #-------------------------------------------------------------------------------
 
 [[ -z $HISTORY_BASE ]] && HISTORY_BASE="$HOME/.directory_history"
-[[ -z $PER_DIRECTORY_HISTORY_TOGGLE ]] && PER_DIRECTORY_HISTORY_TOGGLE='^G'
+[[ -z $PER_DIRECTORY_HISTORY_TOGGLE ]] && PER_DIRECTORY_HISTORY_TOGGLE='\el'
 
 #-------------------------------------------------------------------------------
 # toggle global/directory history used for searching - ctrl-G by default
