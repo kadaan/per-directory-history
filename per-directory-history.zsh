@@ -1,60 +1,8 @@
 #!/usr/bin/env zsh
-#
-# This is a implementation of per directory history for zsh, some
-# implementations of which exist in bash[1,2].  It also implements
-# a per-directory-history-toggle-history function to change from using the
-# directory history to using the global history.  In both cases the history is
-# always saved to both the global history and the directory history, so the
-# toggle state will not effect the saved histories.  Being able to switch
-# between global and directory histories on the fly is a novel feature as far
-# as I am aware.
-#
-#-------------------------------------------------------------------------------
-# Configuration
-#-------------------------------------------------------------------------------
-#
-# HISTORY_BASE a global variable that defines the base directory in which the
-# directory histories are stored
-#
-#-------------------------------------------------------------------------------
-# History
-#-------------------------------------------------------------------------------
-#
-# The idea/inspiration for a per directory history is from Stewart MacArthur[1]
-# and Dieter[2], the implementation idea is from Bart Schaefer on the the zsh
-# mailing list[3].  The implementation is by Jim Hester in September 2012.
-#
-# [1]: http://www.compbiome.com/2010/07/bash-per-directory-bash-history.html
-# [2]: http://dieter.plaetinck.be/per_directory_bash
-# [3]: http://www.zsh.org/mla/users/1997/msg00226.html
-#
-################################################################################
-#
-# Copyright (c) 2014 Jim Hester
-#
-# This software is provided 'as-is', without any express or implied warranty. 
-# In no event will the authors be held liable for any damages arising from the
-# use of this software.
-#
-# Permission is granted to anyone to use this software for any purpose,
-# including commercial applications, and to alter it and redistribute it
-# freely, subject to the following restrictions:
-#
-# 1. The origin of this software must not be misrepresented; you must not claim
-# that you wrote the original software. If you use this software in a product,
-# an acknowledgment in the product documentation would be appreciated but is
-# not required.
-#
-# 2. Altered source versions must be plainly marked as such, and must not be
-# misrepresented as being the original software.
-#
-# 3. This notice may not be removed or altered from any source distribution..
-#
-################################################################################
 
-#-------------------------------------------------------------------------------
-# configuration, the base under which the directory histories are stored
-#-------------------------------------------------------------------------------
+# An implementation of per-directory history (with a local/global
+# toggle hotkey) which is friendly with large (global) history files
+# and share_history.
 
 [[ -z $PER_DIRECTORY_HISTORY_BASE ]] && PER_DIRECTORY_HISTORY_BASE="$HOME/.directory_history"
 [[ -z $PER_DIRECTORY_HISTORY_FILE ]] && PER_DIRECTORY_HISTORY_FILE="zsh-per-directory-history"
@@ -89,26 +37,11 @@ _per_directory_history_path="$PER_DIRECTORY_HISTORY_BASE${PWD:A}/$PER_DIRECTORY_
 
 function _per-directory-history-change-directory() {
 	_per_directory_history_path="$PER_DIRECTORY_HISTORY_BASE${PWD:A}/$PER_DIRECTORY_HISTORY_FILE"
-	mkdir -p ${_per_directory_history_path:h}
 	if ! $_per_directory_history_is_global
 	then
-		#save to the global history
-		fc -AI $HISTFILE
-		#save history to previous file
-		local prev="$PER_DIRECTORY_HISTORY_BASE${OLDPWD:A}/$PER_DIRECTORY_HISTORY_FILE"
-		mkdir -p ${prev:h}
-		fc -AI $prev
-
-		#discard previous directory's history
-		local original_histsize=$HISTSIZE
-		HISTSIZE=0
-		HISTSIZE=$original_histsize
-
-		#read history in new file
-		if [[ -e $_per_directory_history_path ]]
-		then
-			fc -R $_per_directory_history_path
-		fi
+		fc -P
+		mkdir -p ${_per_directory_history_path:h}
+		fc -p $_per_directory_history_path
 	fi
 }
 
@@ -116,40 +49,47 @@ function _per-directory-history-addhistory() {
 	# respect hist_ignore_space
 	if [[ -o hist_ignore_space ]] && [[ "$1" == \ * ]]
 	then
-		true
-	else
-		print -Sr -- "${1%%$'\n'}"
-		fc -p $_per_directory_history_path
+		return
+	fi
+
+	# Can't write to history (print -S) from addhistory,
+	# save command to be added later from preexec hook
+	_per_directory_history_pending_cmd="${1%%$'\n'}"
+}
+
+function _per-directory-history-preexec() {
+	if [[ -v _per_directory_history_pending_cmd ]]
+	then
+		local fn
+		if $_per_directory_history_is_global
+		then
+			mkdir -p ${_per_directory_history_path:h}
+			fn=$_per_directory_history_path
+		else
+			fn=$_per_directory_history_main_histfile
+		fi
+
+		fc -p
+		print -Sr -- $_per_directory_history_pending_cmd
+		SAVEHIST=1
+		fc -A $fn
+		fc -P
+		unset _per_directory_history_pending_cmd
 	fi
 }
 
 
 function _per-directory-history-set-directory-history() {
-	if $_per_directory_history_is_global
-	then
-		fc -AI $HISTFILE
-		local original_histsize=$HISTSIZE
-		HISTSIZE=0
-		HISTSIZE=$original_histsize
-		if [[ -e "$_per_directory_history_path" ]]
-		then
-			fc -R "$_per_directory_history_path"
-		fi
-	fi
+	fc -P
+
+	mkdir -p ${_per_directory_history_path:h}
+	fc -p $_per_directory_history_path
 	_per_directory_history_is_global=false
 }
 function _per-directory-history-set-global-history() {
-	if ! $_per_directory_history_is_global
-	then
-		fc -AI $_per_directory_history_path
-		local original_histsize=$HISTSIZE
-		HISTSIZE=0
-		HISTSIZE=$original_histsize
-		if [[ -e "$HISTFILE" ]]
-		then
-			fc -R "$HISTFILE"
-		fi
-	fi
+	fc -P
+
+	fc -p $_per_directory_history_main_histfile
 	_per_directory_history_is_global=true
 }
 
@@ -158,8 +98,10 @@ function _per-directory-history-set-global-history() {
 autoload -U add-zsh-hook
 add-zsh-hook chpwd _per-directory-history-change-directory
 add-zsh-hook zshaddhistory _per-directory-history-addhistory
+add-zsh-hook preexec _per-directory-history-preexec
+
+_per_directory_history_main_histfile=$HISTFILE
+unset HISTFILE
 
 #start in directory mode
-mkdir -p ${_per_directory_history_path:h}
-_per_directory_history_is_global=true
 _per-directory-history-set-directory-history
