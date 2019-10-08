@@ -64,7 +64,7 @@
 #-------------------------------------------------------------------------------
 
 function per-directory-history-toggle-history() {
-  if [[ $_per_directory_history_is_global == true ]]; then
+  if $_per_directory_history_is_global; then
     _per-directory-history-set-directory-history
     print -n "\nusing local history"
   else
@@ -88,7 +88,7 @@ _per_directory_history_directory="$HISTORY_BASE${PWD:A}/history"
 function _per-directory-history-change-directory() {
   _per_directory_history_directory="$HISTORY_BASE${PWD:A}/history"
   mkdir -p ${_per_directory_history_directory:h}
-  if [[ $_per_directory_history_is_global == false ]]; then
+  if ! $_per_directory_history_is_global; then
     #save to the global history
     fc -AI $HISTFILE
     #save history to previous file
@@ -120,7 +120,7 @@ function _per-directory-history-addhistory() {
 
 
 function _per-directory-history-set-directory-history() {
-  if [[ $_per_directory_history_is_global == true ]]; then
+  if $_per_directory_history_is_global; then
     fc -AI $HISTFILE
     local original_histsize=$HISTSIZE
     HISTSIZE=0
@@ -132,7 +132,7 @@ function _per-directory-history-set-directory-history() {
   _per_directory_history_is_global=false
 }
 function _per-directory-history-set-global-history() {
-  if [[ $_per_directory_history_is_global == false ]]; then
+  if ! $_per_directory_history_is_global; then
     fc -AI $_per_directory_history_directory
     local original_histsize=$HISTSIZE
     HISTSIZE=0
