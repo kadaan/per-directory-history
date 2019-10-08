@@ -56,7 +56,7 @@
 # configuration, the base under which the directory histories are stored
 #-------------------------------------------------------------------------------
 
-[[ -z $HISTORY_BASE ]] && HISTORY_BASE="$HOME/.directory_history"
+[[ -z $PER_DIRECTORY_HISTORY_BASE ]] && PER_DIRECTORY_HISTORY_BASE="$HOME/.directory_history"
 [[ -z $PER_DIRECTORY_HISTORY_TOGGLE ]] && PER_DIRECTORY_HISTORY_TOGGLE='\el'
 
 #-------------------------------------------------------------------------------
@@ -84,17 +84,17 @@ bindkey $PER_DIRECTORY_HISTORY_TOGGLE per-directory-history-toggle-history
 # implementation details
 #-------------------------------------------------------------------------------
 
-_per_directory_history_directory="$HISTORY_BASE${PWD:A}/history"
+_per_directory_history_directory="$PER_DIRECTORY_HISTORY_BASE${PWD:A}/history"
 
 function _per-directory-history-change-directory() {
-	_per_directory_history_directory="$HISTORY_BASE${PWD:A}/history"
+	_per_directory_history_directory="$PER_DIRECTORY_HISTORY_BASE${PWD:A}/history"
 	mkdir -p ${_per_directory_history_directory:h}
 	if ! $_per_directory_history_is_global
 	then
 		#save to the global history
 		fc -AI $HISTFILE
 		#save history to previous file
-		local prev="$HISTORY_BASE${OLDPWD:A}/history"
+		local prev="$PER_DIRECTORY_HISTORY_BASE${OLDPWD:A}/history"
 		mkdir -p ${prev:h}
 		fc -AI $prev
 
