@@ -57,6 +57,7 @@
 #-------------------------------------------------------------------------------
 
 [[ -z $PER_DIRECTORY_HISTORY_BASE ]] && PER_DIRECTORY_HISTORY_BASE="$HOME/.directory_history"
+[[ -z $PER_DIRECTORY_HISTORY_FILE ]] && PER_DIRECTORY_HISTORY_FILE="zsh-per-directory-history"
 [[ -z $PER_DIRECTORY_HISTORY_TOGGLE ]] && PER_DIRECTORY_HISTORY_TOGGLE='\el'
 
 #-------------------------------------------------------------------------------
@@ -84,17 +85,17 @@ bindkey $PER_DIRECTORY_HISTORY_TOGGLE per-directory-history-toggle-history
 # implementation details
 #-------------------------------------------------------------------------------
 
-_per_directory_history_path="$PER_DIRECTORY_HISTORY_BASE${PWD:A}/history"
+_per_directory_history_path="$PER_DIRECTORY_HISTORY_BASE${PWD:A}/$PER_DIRECTORY_HISTORY_FILE"
 
 function _per-directory-history-change-directory() {
-	_per_directory_history_path="$PER_DIRECTORY_HISTORY_BASE${PWD:A}/history"
+	_per_directory_history_path="$PER_DIRECTORY_HISTORY_BASE${PWD:A}/$PER_DIRECTORY_HISTORY_FILE"
 	mkdir -p ${_per_directory_history_path:h}
 	if ! $_per_directory_history_is_global
 	then
 		#save to the global history
 		fc -AI $HISTFILE
 		#save history to previous file
-		local prev="$PER_DIRECTORY_HISTORY_BASE${OLDPWD:A}/history"
+		local prev="$PER_DIRECTORY_HISTORY_BASE${OLDPWD:A}/$PER_DIRECTORY_HISTORY_FILE"
 		mkdir -p ${prev:h}
 		fc -AI $prev
 
