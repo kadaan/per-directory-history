@@ -57,23 +57,31 @@ function _per-directory-history-addhistory() {
 	_per_directory_history_pending_cmd="${1%%$'\n'}"
 }
 
+_per_directory_history_last_cmd=''
+
 function _per-directory-history-preexec() {
 	if [[ -v _per_directory_history_pending_cmd ]]
 	then
-		local fn
-		if $_per_directory_history_is_global
+		if [[ "$_per_directory_history_pending_cmd" != "$_per_directory_history_last_cmd" ]]
 		then
-			mkdir -p ${_per_directory_history_path:h}
-			fn=$_per_directory_history_path
-		else
-			fn=$_per_directory_history_main_histfile
+			local fn
+			if $_per_directory_history_is_global
+			then
+				mkdir -p ${_per_directory_history_path:h}
+				fn=$_per_directory_history_path
+			else
+				fn=$_per_directory_history_main_histfile
+			fi
+
+			fc -p
+			print -Sr -- $_per_directory_history_pending_cmd
+			SAVEHIST=1
+			fc -A $fn
+			fc -P
+
+			_per_directory_history_last_cmd=$_per_directory_history_pending_cmd
 		fi
 
-		fc -p
-		print -Sr -- $_per_directory_history_pending_cmd
-		SAVEHIST=1
-		fc -A $fn
-		fc -P
 		unset _per_directory_history_pending_cmd
 	fi
 }
