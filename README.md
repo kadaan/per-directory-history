@@ -42,13 +42,14 @@ Usage
 2.  The default mode is per-directory history, interact with your history as normal.
 
 3.  Press <kbd>Alt</kbd><kbd>L</kbd> (lowercase) to toggle between
-    local and global histories.  If you would prefer a different
-    shortcut, please set the `PER_DIRECTORY_HISTORY_TOGGLE` shell
-    variable.
+    local and global histories.
 
 -------------------------------------------------------------------------------
 Configuration
 -------------------------------------------------------------------------------
+
+* `PER_DIRECTORY_HISTORY_TOGGLE` is a shell variable defining the key
+  combination which toggles between directory and global histories.
 
 * `PER_DIRECTORY_HISTORY_BASE` is a shell variable which defines the
   base directory in which the directory histories are stored.
