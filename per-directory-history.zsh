@@ -84,11 +84,11 @@ bindkey $PER_DIRECTORY_HISTORY_TOGGLE per-directory-history-toggle-history
 # implementation details
 #-------------------------------------------------------------------------------
 
-_per_directory_history_directory="$PER_DIRECTORY_HISTORY_BASE${PWD:A}/history"
+_per_directory_history_path="$PER_DIRECTORY_HISTORY_BASE${PWD:A}/history"
 
 function _per-directory-history-change-directory() {
-	_per_directory_history_directory="$PER_DIRECTORY_HISTORY_BASE${PWD:A}/history"
-	mkdir -p ${_per_directory_history_directory:h}
+	_per_directory_history_path="$PER_DIRECTORY_HISTORY_BASE${PWD:A}/history"
+	mkdir -p ${_per_directory_history_path:h}
 	if ! $_per_directory_history_is_global
 	then
 		#save to the global history
@@ -104,9 +104,9 @@ function _per-directory-history-change-directory() {
 		HISTSIZE=$original_histsize
 
 		#read history in new file
-		if [[ -e $_per_directory_history_directory ]]
+		if [[ -e $_per_directory_history_path ]]
 		then
-			fc -R $_per_directory_history_directory
+			fc -R $_per_directory_history_path
 		fi
 	fi
 }
@@ -118,7 +118,7 @@ function _per-directory-history-addhistory() {
 		true
 	else
 		print -Sr -- "${1%%$'\n'}"
-		fc -p $_per_directory_history_directory
+		fc -p $_per_directory_history_path
 	fi
 }
 
@@ -130,9 +130,9 @@ function _per-directory-history-set-directory-history() {
 		local original_histsize=$HISTSIZE
 		HISTSIZE=0
 		HISTSIZE=$original_histsize
-		if [[ -e "$_per_directory_history_directory" ]]
+		if [[ -e "$_per_directory_history_path" ]]
 		then
-			fc -R "$_per_directory_history_directory"
+			fc -R "$_per_directory_history_path"
 		fi
 	fi
 	_per_directory_history_is_global=false
@@ -140,7 +140,7 @@ function _per-directory-history-set-directory-history() {
 function _per-directory-history-set-global-history() {
 	if ! $_per_directory_history_is_global
 	then
-		fc -AI $_per_directory_history_directory
+		fc -AI $_per_directory_history_path
 		local original_histsize=$HISTSIZE
 		HISTSIZE=0
 		HISTSIZE=$original_histsize
@@ -159,6 +159,6 @@ add-zsh-hook chpwd _per-directory-history-change-directory
 add-zsh-hook zshaddhistory _per-directory-history-addhistory
 
 #start in directory mode
-mkdir -p ${_per_directory_history_directory:h}
+mkdir -p ${_per_directory_history_path:h}
 _per_directory_history_is_global=true
 _per-directory-history-set-directory-history
