@@ -15,10 +15,10 @@ function per-directory-history-toggle-history() {
 	if $_per_directory_history_is_global
 	then
 		_per-directory-history-set-directory-history
-		print -n "\nusing local history"
+		print -n "\e[2K\rusing local history\n"
 	else
 		_per-directory-history-set-global-history
-		print -n "\nusing global history"
+		print -n "\e[2K\rusing global history\n"
 	fi
 	zle .push-line
 	zle .accept-line
