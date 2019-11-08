@@ -18,7 +18,7 @@ function per-directory-history-toggle-history() {
 	else
 		_per-directory-history-set-global-history
 	fi
-	zle reset-prompt
+	_p9k_update_prompt history_type
 }
 
 autoload per-directory-history-toggle-history
