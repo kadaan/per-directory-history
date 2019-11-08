@@ -18,6 +18,12 @@ function per-directory-history-toggle-history() {
 	else
 		_per-directory-history-set-global-history
 	fi
+	if [[ "$(zle -l | grep hsmw | wc -l)" -gt 5 ]]; then
+		__hsmw_hcw_restart=1
+		if [[ "$__hsmw_ctx" -eq 0 ]]; then
+			_hsmw_reset_prompt
+		fi
+	fi
 	_p9k_update_prompt history_type
 }
 
