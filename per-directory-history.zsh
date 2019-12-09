@@ -113,5 +113,5 @@ add-zsh-hook preexec _per-directory-history-preexec
 _per_directory_history_main_histfile=$HISTFILE
 unset HISTFILE
 
-#start in directory mode
-_per-directory-history-set-directory-history
+#start in global mode
+_per-directory-history-set-global-history
