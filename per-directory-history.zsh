@@ -3,6 +3,7 @@
 # An implementation of per-directory history.
 # See README.md for more information.
 
+[[ -z $_per_directory_history_is_global ]] && _per_directory_history_is_global=true
 [[ -z $PER_DIRECTORY_HISTORY_BASE ]] && PER_DIRECTORY_HISTORY_BASE="$HOME/.zsh_history_dirs"
 [[ -z $PER_DIRECTORY_HISTORY_FILE ]] && PER_DIRECTORY_HISTORY_FILE="zsh-per-directory-history"
 [[ -z $PER_DIRECTORY_HISTORY_TOGGLE ]] && PER_DIRECTORY_HISTORY_TOGGLE='^g'
@@ -24,7 +25,10 @@ function per-directory-history-toggle-history() {
 			_hsmw_simulate_widget
 		fi
 	fi
-	_p9k_update_prompt history_type
+    _p9k_refresh_reason=history_type
+    _p9k_set_prompt
+    _p9k_refresh_reason=''
+    _p9k_reset_prompt
 }
 
 autoload per-directory-history-toggle-history
