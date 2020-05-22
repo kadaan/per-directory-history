@@ -6,7 +6,7 @@ This is an implementation of per directory history for ZSH:
 - Typed commands are saved both in a global history, as well as a
   per-directory history.
 
-- A hotkey (<kbd>Alt</kbd><kbd>L</kbd> by default) toggles the current
+- A hotkey (<kbd>Ctrl</kbd><kbd>g</kbd> by default) toggles the current
   history, used for ZSH history navigation and search.
 
 - Directory histories are saved in a hierarchy under your home
@@ -41,7 +41,7 @@ Usage
 
 2.  The default mode is per-directory history, interact with your history as normal.
 
-3.  Press <kbd>Alt</kbd><kbd>L</kbd> (lowercase) to toggle between
+3.  Press <kbd>Ctrl</kbd><kbd>g</kbd> (lowercase) to toggle between
     local and global histories.
 
 -------------------------------------------------------------------------------
