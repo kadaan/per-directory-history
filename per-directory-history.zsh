@@ -25,10 +25,12 @@ function per-directory-history-toggle-history() {
 			_hsmw_simulate_widget
 		fi
 	fi
-    _p9k_refresh_reason=history_type
-    _p9k_set_prompt
-    _p9k_refresh_reason=''
-    _p9k_reset_prompt
+	if [[ "$(zle -l | grep p9k | wc -l)" -gt 4 ]]; then
+		_p9k_refresh_reason=history_type
+		_p9k_set_prompt
+		_p9k_refresh_reason=''
+		_p9k_reset_prompt
+    fi
 }
 
 autoload per-directory-history-toggle-history
