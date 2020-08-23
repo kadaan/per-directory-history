@@ -6,7 +6,7 @@ This is an implementation of per directory history for ZSH:
 - Typed commands are saved both in a global history, as well as a
   per-directory history.
 
-- A hotkey (<kbd>Alt</kbd><kbd>L</kbd> by default) toggles the current
+- A hotkey (<kbd>Ctrl</kbd><kbd>g</kbd> by default) toggles the current
   history, used for ZSH history navigation and search.
 
 - Directory histories are saved in a hierarchy under your home
@@ -41,7 +41,7 @@ Usage
 
 2.  The default mode is per-directory history, interact with your history as normal.
 
-3.  Press <kbd>Alt</kbd><kbd>L</kbd> (lowercase) to toggle between
+3.  Press <kbd>Ctrl</kbd><kbd>g</kbd> (lowercase) to toggle between
     local and global histories.
 
 -------------------------------------------------------------------------------
@@ -52,15 +52,17 @@ Configuration
   combination which toggles between directory and global histories.
 
 * `PER_DIRECTORY_HISTORY_BASE` is a shell variable which defines the
-  base directory in which the directory histories are stored.
+  base directory in which the directory histories are stored. Defaults
+  to `$XDG_DATA_HOME/zsh/zsh_history_dirs`.
 
 * `PER_DIRECTORY_HISTORY_FILE` is a shell variable which defines the
   name of the files which will contain the directory histories.  It
   should be set to something that's unlikely to occur as a path
   component in any paths you intend to visit on your filesystem.
+  Defaults to `zsh-per-directory-history`.
 
 * `per-directory-history-toggle-history` is the function to toggle the
   history mode.
 
-[home]: https://github.com/CyberShadow/per-directory-history
+[home]: https://github.com/kadaan/per-directory-history
 [old]: http://github.com/jimhester/per-directory-history

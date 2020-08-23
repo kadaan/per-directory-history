@@ -4,12 +4,12 @@
 # See README.md for more information.
 
 [[ -z $_per_directory_history_is_global ]] && _per_directory_history_is_global=true
-[[ -z $PER_DIRECTORY_HISTORY_BASE ]] && PER_DIRECTORY_HISTORY_BASE="$HOME/.zsh_history_dirs"
+[[ -z $PER_DIRECTORY_HISTORY_BASE ]] && PER_DIRECTORY_HISTORY_BASE="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/zsh_history_dirs"
 [[ -z $PER_DIRECTORY_HISTORY_FILE ]] && PER_DIRECTORY_HISTORY_FILE="zsh-per-directory-history"
 [[ -z $PER_DIRECTORY_HISTORY_TOGGLE ]] && PER_DIRECTORY_HISTORY_TOGGLE='^g'
 
 #-------------------------------------------------------------------------------
-# toggle global/directory history used for searching - alt-l by default
+# toggle global/directory history used for searching - Ctrl-g by default
 #-------------------------------------------------------------------------------
 
 function per-directory-history-toggle-history() {
@@ -25,10 +25,12 @@ function per-directory-history-toggle-history() {
 			_hsmw_simulate_widget
 		fi
 	fi
-    _p9k_refresh_reason=history_type
-    _p9k_set_prompt
-    _p9k_refresh_reason=''
-    _p9k_reset_prompt
+	if [[ "$(zle -l | grep p9k | wc -l)" -gt 4 ]]; then
+		_p9k_refresh_reason=history_type
+		_p9k_set_prompt
+		_p9k_refresh_reason=''
+		_p9k_reset_prompt
+    fi
 }
 
 autoload per-directory-history-toggle-history
